@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Javascript</title>
+  <script type="text/javascript">
+    var data = [
+      {"field_date": 25, "appointment": "/test/hest"},
+      {"field_date": 25, "appointment": "/test/hest1"},
+      {"field_date": 25, "appointment": "/test/hest2"},
+      {"field_date": 27, "appointment": "/test/hest3"},
+      {"field_date": 28, "appointment": "/test/hest4"},
+      {"field_date": 28, "appointment": "/test/hest5"}
+    ];
+    function start() {
+      var dates = [];
+      var date = 0;
+      for(var i = 0; i < data.length; i++) {
+        if (date == 0) {
+          date = data[i].field_date;
+          dates.push({"field_date": data[i].field_date, "appointment": [data[i].appointment]});
+        } else if (date == data[i].field_date) {
+          for(var j = 0; j < dates.length; j++) {
+            if (data[i].field_date == dates[j].field_date) {
+              dates[j].appointment.push(data[i].appointment);
+            }
+          }
+        } else if (date != data[i].field_date) {
+          dates.push({"field_date": data[i].field_date, "appointment": [data[i].appointment]});
+          date = data[i].field_date;
+        }
+      }
+      console.log(dates);
+    }
+  </script>
+</head>
+<body onload="start()">
+  <h1>Join objects</h1>
+  <pre>
+    var input = [
+      {"field_date": 25, "appointment": "/test/hest"},
+      {"field_date": 25, "appointment": "/test/hest1"},
+      {"field_date": 25, "appointment": "/test/hest2"},
+      {"field_date": 27, "appointment": "/test/hest3"},
+      {"field_date": 28, "appointment": "/test/hest4"},
+      {"field_date": 28, "appointment": "/test/hest5"}
+    ];
+  </pre>
+  <p>Data above needs to be transformed to this:</p>
+  <pre id="output">
+    var output = [{
+      "field_date": 25,
+      "appointment": [
+        "/test/hest",
+        "/test/hest1",
+        "/test/hest2"
+      ]
+      },{
+      "field_date": 27,
+      "appointment": [
+        "/test/hest3"
+      ]
+      },{
+      "field_date": 28,
+      "appointment": [
+        "/test/hest4",
+        "/test/hest5"
+      ]
+      }
+    ];
+  </pre>
+  <p>Javascript used:</p>
+  <pre>
+    var dates = [];
+      var date = 0;
+      for(var i = 0; i < data.length; i++) {
+        if (date == 0) {
+          date = data[i].field_date;
+          dates.push({"field_date": data[i].field_date, "appointment": [data[i].appointment]});
+        } else if (date == data[i].field_date) {
+          for(var j = 0; j < dates.length; j++) {
+            if (data[i].field_date == dates[j].field_date) {
+              dates[j].appointment.push(data[i].appointment);
+            }
+          }
+        } else if (date != data[i].field_date) {
+          dates.push({"field_date": data[i].field_date, "appointment": [data[i].appointment]});
+          date = data[i].field_date;
+        }
+      }
+      console.log(dates);
+  </pre>
+</body>
+</html>
