@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Calendar</title>
+    <script>
+      /* Can be true or false */
+      var weekStartOnMonday = true;
+      /* You can change the months names, but NOT the order */
+      var months = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli',
+                    'August', 'September', 'Oktober', 'November', 'December'];
+      /* You can change the days names, but NOT the order */
+      var days = ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'];
+      // DO NOT CHANGE THE VARIABLES BELOW!
+      // Keep track of row and cell for the table.
+      var tableRowPos = rowCellPos = 0;
+      var table = document.getElementById('tableCalendar');
+      // Global date object and variables
+      var date = new Date();
+      var row = "";
+      Date.prototype.monthName = function() {
+        return months[this.getMonth()];
+      };
+      Date.prototype.dayName = function(i) {
+        return days[i];
+      }
+      /**
+       * This needs to have a new Date(), since we do not want to change the
+       * var date = new Date() object above.
+       */
+      Date.prototype.getStartDay = function() {
+        var start = new Date(this.getFullYear(), this.getMonth(), '1').getDay();
+        if(start == 0 && weekStartOnMonday == true) { start = 7; }
+        return start;
+      }
+      /**
+      * This needs to have a new Date(), since we do not want to change the
+      * var date = new Date() object above.
+      */
+      Date.prototype.getDaysInMonth = function() {
+        return new Date(this.getFullYear(), this.getMonth()+1, 0).getDate();
+      }
+      /**
+       * This is the onLoad func.
+       */
+      function loadCalendar() {
+        table = document.getElementById("tableCalendar");
+        setStartDay();
+        buildMonthYear();
+        buildWeekDaysName();
+        buildDays();
+      }
+      /**
+       * Change the month. Dir is 1 or -1
+       */
+      function changeMonth(dir) {
+        date.setMonth(date.getMonth()+dir);
+        emptyTable();
+        buildMonthYear();
+        buildWeekDaysName();
+        buildDays();
+      }
+      /**
+       * Set a new row for table.
+       */
+      function setNewRow(table) {
+        rowCellPos = 0;
+        return table.insertRow(tableRowPos++);
+      }
+      /**
+       * Set a new cell for certain row in table.
+       */
+      function setNewCell(row) {
+        return row.insertCell(rowCellPos++);
+      }
+      /**
+       * Set an empty cell.
+       */
+      function setEmptyCell(iStart, length) {
+        for(var i = iStart; i < length; i++) {
+          setNewCell(row).innerHTML = "&nbsp;";
+        }
+      }
+      /**
+       * Set the names of the weekdays
+       */
+      function buildWeekDaysName() {
+        row = setNewRow(table);
+        for(var i = 0; i < 7; i++) {
+          setNewCell(row).innerHTML = date.dayName(i);
+        }
+      }
+      /**
+       * Build table from Date object.
+       */
+      function buildDays() {
+        row = setNewRow(table);
+        var startPos = (weekStartOnMonday) ? 1 : 0;
+        setEmptyCell(startPos, date.getStartDay());
+        for(var i = 1; i <= date.getDaysInMonth(); i++) {
+          if(rowCellPos % 7 == 0) {
+            row = setNewRow(table);
+          }
+          var cell = setNewCell(row);
+          cell.innerHTML = i;
+          if(date.getDate() == i) { cell.className = 'today'; }
+        }
+        setEmptyCell(rowCellPos, 7);
+        // global var needs to be reset
+        tableRowPos = rowCellPos = 0;
+      }
+      /**
+       * Set the monthname and year.
+       */
+      function buildMonthYear() {
+        document.getElementById("choosenMonth").innerHTML = date.monthName() + " " + date.getFullYear();
+      }
+      /**
+       * Empty the table when changing month.
+       */
+      function emptyTable() {
+        document.getElementById("tableCalendar").innerHTML = "";
+      }
+      /**
+       * If week starts sunday, change the order.
+       */
+      function setStartDay() {
+        if(weekStartOnMonday == false) {
+          days.unshift(days[6]);
+          days.pop();
+        }
+      }
+    </script>
+    <style>
+      td, th {
+        text-align: center;
+      }
+      td.today {
+        color: #FFF;
+        background-color: #EE0000;
+      }
+      h1 {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body onload="loadCalendar()">
+    <div id="calendar" style="width:20rem;">
+      <h1>Calendar</h1>
+      <div style="width: 20%; float:left; text-align: center;">
+        <a href="javascript: changeMonth(-1);">&lt;&lt;</a>
+      </div>
+      <div style="width: 60%; float:left; text-align:center;" id="choosenMonth">--</div>
+      <div style="width: 20%; float:left; text-align: center;">
+        <a href="javascript: changeMonth(1);">&gt;&gt;</a>
+      </div>
+      <table id="tableCalendar" style="width: 20rem;"></table>
+    </div>
+  </body>
+
+</html>
